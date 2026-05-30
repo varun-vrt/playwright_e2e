@@ -1,18 +1,68 @@
 package com.playwright.browser;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Properties;
 
 public class BrowserFactory {
+    Properties prop;
 
-    public void initBrowser() {
-        Playwright playwright = Playwright.create();
-        Browser browser = playwright.chromium().launch();
-        Page page = browser.newPage();
+    public static ThreadLocal<Playwright> playwrightThreadLocal = new ThreadLocal<>();
+    public static ThreadLocal<Browser> browserThreadLocal = new ThreadLocal<>();
+    public static ThreadLocal<BrowserContext> browserContextThreadLocal = new ThreadLocal<>();
+    public static ThreadLocal<Page> pageThreadLocal =new ThreadLocal<>();
+
+    public static Playwright getPlaywright(){
+        return playwrightThreadLocal.get();
     }
 
-    public void initProperties(){
+    public static Browser getBrowser(){
+        return browserThreadLocal.get();
+    }
 
+    public static BrowserContext getBrowserContext(){
+        return browserContextThreadLocal.get();
+    }
+
+    public static Page getPage(){
+        return pageThreadLocal.get();
+    }
+
+    public Page initBrowser(String browserName) {
+        playwrightThreadLocal.set(Playwright.create());
+        switch (browserName.toLowerCase()){
+            case "chrome":
+                browserThreadLocal.set(getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)));
+                break;
+            case "firefox":
+                browserThreadLocal.set(getPlaywright().firefox().launch(new BrowserType.LaunchOptions().setHeadless(false)));
+                break;
+            case "safari":
+                browserThreadLocal.set(getPlaywright().webkit().launch(new BrowserType.LaunchOptions().setHeadless(false)));
+                break;
+            default:
+                throw new RuntimeException("Not a supported browser type");
+        }
+        browserContextThreadLocal.set(getBrowser().newContext());
+        pageThreadLocal.set(getBrowserContext().newPage());
+        getPage().navigate(prop.getProperty("url"));
+        return getPage();
+    }
+
+    public Properties initProperties() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream("src/test/resources/config/config.properties");
+            prop = new Properties();
+            prop.load(fileInputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return prop;
+    }
+
+    public void quitBrowser(){
+        getPage().context().browser().close();
     }
 }
