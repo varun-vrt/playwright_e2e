@@ -34,13 +34,13 @@ public class BrowserFactory {
         playwrightThreadLocal.set(Playwright.create());
         switch (browserName.toLowerCase()){
             case "chrome":
-                browserThreadLocal.set(getPlaywright().chromium().launch(new BrowserType.LaunchOptions().setHeadless(false)));
+                browserThreadLocal.set(getPlaywright().chromium().launch());
                 break;
             case "firefox":
-                browserThreadLocal.set(getPlaywright().firefox().launch(new BrowserType.LaunchOptions().setHeadless(false)));
+                browserThreadLocal.set(getPlaywright().firefox().launch());
                 break;
             case "safari":
-                browserThreadLocal.set(getPlaywright().webkit().launch(new BrowserType.LaunchOptions().setHeadless(false)));
+                browserThreadLocal.set(getPlaywright().webkit().launch());
                 break;
             default:
                 throw new RuntimeException("Not a supported browser type");

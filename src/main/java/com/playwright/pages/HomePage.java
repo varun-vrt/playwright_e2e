@@ -23,7 +23,7 @@ public class HomePage{
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Shop by Category")).click();
     }
 
-    public List<String> listOfCategories(){
-        return  page.getByRole(AriaRole.NAVIGATION).filter(new Locator.FilterOptions().setHasText("Components Cameras Phone,")).allInnerTexts();
+    public Locator listOfCategories(){
+        return  page.getByRole(AriaRole.NAVIGATION).filter(new Locator.FilterOptions().setHasText("Components Cameras Phone,")).locator("a");
     }
 }
