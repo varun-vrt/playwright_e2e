@@ -19,12 +19,4 @@
         </classes>
     </test>
 
-    <!-- Test execution on Edge -->
-<!--    <test name="EdgeTest">-->
-<!--        <parameter name="browser" value="edge"/>-->
-<!--        <classes>-->
-<!--            <class name="com.playwright.tests.HomePageTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
-
 </suite>

@@ -3,6 +3,7 @@ package com.playwright.browser;
 import com.microsoft.playwright.*;
 
 import java.io.FileInputStream;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class BrowserFactory {
@@ -29,7 +30,7 @@ public class BrowserFactory {
         return pageThreadLocal.get();
     }
 
-    public Page initBrowser(String browserName) {
+    public void initBrowser(String browserName) {
         playwrightThreadLocal.set(Playwright.create());
         switch (browserName.toLowerCase()){
             case "chrome":
@@ -44,7 +45,14 @@ public class BrowserFactory {
             default:
                 throw new RuntimeException("Not a supported browser type");
         }
+    }
+
+    public Page initSession(){
         browserContextThreadLocal.set(getBrowser().newContext());
+        getBrowserContext().tracing().start(new Tracing.StartOptions()
+                .setScreenshots(true)
+                .setSnapshots(true)
+                .setSources(true));
         pageThreadLocal.set(getBrowserContext().newPage());
         getPage().navigate(prop.getProperty("url"));
         return getPage();
@@ -62,6 +70,7 @@ public class BrowserFactory {
     }
 
     public void quitBrowser(){
-        getPage().context().browser().close();
+        getBrowser().close();
+        getPlaywright().close();
     }
 }
