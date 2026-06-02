@@ -3,7 +3,6 @@ package com.playwright.browser;
 import com.microsoft.playwright.*;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Properties;
 
 public class BrowserFactory {

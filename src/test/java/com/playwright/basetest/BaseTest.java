@@ -3,19 +3,20 @@ package com.playwright.basetest;
 import com.microsoft.playwright.Page;
 import com.playwright.browser.BrowserFactory;
 import com.playwright.pages.HomePage;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Parameters;
-
-import java.io.FileNotFoundException;
-import java.util.Properties;
 
 public class BaseTest {
     BrowserFactory bf;
     Page page;
     protected HomePage homePage;
 
-    @BeforeTest
+    public BaseTest(){
+        bf = new BrowserFactory();
+    }
+
+    @BeforeMethod
     @Parameters("browser")
     public void launchBrowser(String browser){
         bf.initProperties();
@@ -23,7 +24,7 @@ public class BaseTest {
         homePage = new HomePage(page);
     }
 
-    @AfterMethod
+    @AfterTest
     public void quitBrowser(){
         bf.quitBrowser();
     }
