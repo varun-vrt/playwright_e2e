@@ -7,7 +7,11 @@ import com.playwright.pages.HomePage;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 
 import static com.playwright.browser.BrowserFactory.getBrowserContext;
 
@@ -18,6 +22,20 @@ public class BaseTest {
 
     public BaseTest(){
         bf = new BrowserFactory();
+    }
+
+    @BeforeSuite
+    public void cleanupPreviousRun() throws IOException {
+        Path traces = Paths.get("target/traces");
+        if (Files.exists(traces)){
+            Files.walk(traces).sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.deleteIfExists(path);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
 
